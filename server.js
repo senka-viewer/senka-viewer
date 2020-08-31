@@ -2,7 +2,7 @@ const next = require('next');
 const express = require('express');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
-const nextI18NextMiddleware = require('next-i18next/middleware').default;
+const { nextI18NextMiddleware } = require('next-i18next/dist/commonjs/middlewares');
 
 const nextI18next = require('./i18n');
 
