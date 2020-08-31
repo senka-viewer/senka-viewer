@@ -1,0 +1,107 @@
+@import "~antd/lib/style/themes/default";
+
+.world-info {
+  .world-name {
+    margin: .5rem 0;
+    font-size: 2.5rem;
+  }
+
+  .status {
+    cursor: help;
+    width: 12px;
+    height: 12px;
+    margin: 0 5px;
+    border-radius: 50%;
+    background-color: @success-color;
+    display: inline-block;
+    vertical-align: middle;
+    transition: all 200ms ease;
+
+    &.not-update {
+      background-color: @error-color;
+    }
+  }
+}
+
+.page-world {
+  .title {
+    margin-top: 1em;
+
+    .main {
+      color: #333;
+      margin: .4rem 0;
+      font-size: 1.5rem;
+    }
+
+    .description {
+      color: #777;
+      margin: .4rem 0;
+    }
+  }
+
+  .senka-ranking {
+    margin-bottom: 50px;
+
+    .footer {
+      p {
+        line-height: 1.5;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        &.highlight {
+          font-weight: bold;
+          background-color: #eaeaea;
+        }
+      }
+
+      .note-icon {
+        cursor: pointer;
+      }
+    }
+
+    .ant-table-tbody > tr.highlight {
+      font-weight: bold;
+
+      & > td {
+        background-color: @alert-info-bg-color !important;
+      }
+    }
+
+    .senka-value {
+      cursor: pointer;
+      border-bottom: 1px dashed #333;
+
+      &.text-success {
+        border-color: @success-color;
+      }
+
+      &.text-warning {
+        border-color: @warning-color;
+      }
+
+      &.text-danger {
+        border-color: @error-color;
+      }
+
+      &.text-info {
+        border-color: @info-color;
+      }
+    }
+  }
+
+  .overview-graph {
+    width: 100%;
+    border-radius: 4px;
+    background-color: #fff;
+    border: 1px solid rgba(34, 36, 38, 0.15);
+  }
+
+  .overview-graph-skeleton {
+    height: 325px;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid rgba(34, 36, 38, 0.15);
+  }
+}

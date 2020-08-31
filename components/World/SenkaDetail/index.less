@@ -1,0 +1,114 @@
+.rank-graph {
+  width: 100%;
+  height: 100% !important;
+}
+
+.history-graph {
+  width: 100%;
+  height: 450px !important;
+}
+
+.modal-wrapper {
+  height: 100%;
+  overflow: auto;
+}
+
+#history {
+  height: 36px;
+  margin: 0 auto;
+  overflow-y: hidden;
+  position: relative;
+  width: calc(~'100% - 40px');
+
+  .history-list {
+    white-space: nowrap;
+    overflow-x: scroll;
+    position: absolute;
+    max-width: 100%;
+    padding-right: 5px;
+    padding-bottom: 16px;
+    margin-bottom: -16px;
+  }
+}
+
+#play-tools {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.senka-racing-modal {
+  .ant-modal-body {
+    height: 75vh;
+    max-height: 580px;
+  }
+}
+
+.senka-detail-modal {
+  .ant-modal-body {
+    height: 70vh;
+    max-height: 565px;
+  }
+
+  .player-info {
+    margin-bottom: 0.5em;
+
+    .title {
+      color: #333;
+      font-size: 1.2em;
+      margin-bottom: 0.2em;
+    }
+
+    .description {
+      color: #777;
+    }
+
+    .btn-clear {
+      margin-left: 10px;
+      cursor: pointer;
+    }
+  }
+
+  .player-list {
+    margin: 0.5em 0;
+
+    .button {
+      text-align: left;
+      margin-bottom: 0.5em;
+    }
+
+    .checked {
+      width: 12px;
+      height: 12px;
+      position: relative;
+      margin-right: 15px;
+      border: 1px solid #333;
+      display: inline-block;
+
+      &::after {
+        content: "";
+        position: absolute;
+        display: block;
+        width: 4px;
+        height: 4px;
+        top: 3px;
+        left: 3px;
+        background-color: #fff;
+      }
+    }
+  }
+
+  .player-chart {
+    .header {
+      margin-bottom: .5em;
+
+      .button-group {
+        text-align: center;
+        margin-bottom: .5em;
+      }
+    }
+
+    .content {
+      height: 435px;
+    }
+  }
+}

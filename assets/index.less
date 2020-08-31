@@ -1,0 +1,33 @@
+@import "~antd/lib/style/themes/default";
+
+.server-list {
+  margin: 25px 0;
+
+  .server-status {
+    float: right;
+    cursor: help;
+  }
+}
+
+.server-ranking {
+  .ant-table-tbody > tr > td {
+    padding: 0;
+  }
+
+  div.cell {
+    padding: 16px;
+    background-color: #fff;
+
+    &.bg-success {
+      background-color: @alert-success-bg-color;
+    }
+
+    &.bg-warning {
+      background-color: @alert-warning-bg-color;
+    }
+
+    &.bg-danger {
+      background-color: @alert-error-bg-color;
+    }
+  }
+}

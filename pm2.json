@@ -1,0 +1,21 @@
+{
+  "apps": [
+    {
+      "name": "senka-viewer",
+      "script": "index.js",
+      "instances": 4,
+      "exec_mode": "cluster_mode",
+      "out_file": "/var/log/pm2/senka-viewer/out/out.log",
+      "error_file": "/var/log/pm2/senka-viewer/error/error.log",
+      "merge_logs": true,
+      "env": {
+        "NODE_ENV": "development",
+        "PORT": 3001
+      },
+      "env_production": {
+        "NODE_ENV": "production",
+        "PORT": 3001
+      }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+# compiled output
+.next
+node_modules
+
+# OS
+.DS_Store
+
+
+# IDEs and editors
+.idea
