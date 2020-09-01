@@ -14,8 +14,7 @@ const themeVariables = lessToJS(
 
 module.exports = withLess({
     env: {
-        // FIXME: 修改这个内部URL
-        INNER_BASE_URL: 'https://senka.su',
+        INNER_BASE_URL: process.env.INNER_BASE_URL || 'https://senka.su',
         // 版本: version (head commit hash)
         APP_VERSION: `${pkgInfo.version} (${cp.execSync('git rev-parse --short HEAD').toString().trim()})`
     },
