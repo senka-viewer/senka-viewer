@@ -14,9 +14,9 @@ const themeVariables = lessToJS(
 
 module.exports = withLess({
     env: {
-        INNER_BASE_URL: process.env.INNER_BASE_URL || 'https://senka.su',
-        // 版本: version (head commit hash)
-        APP_VERSION: `${pkgInfo.version} (${cp.execSync('git rev-parse --short HEAD').toString().trim()})`
+        APP_VERSION: pkgInfo.version,
+        APP_COMMIT: cp.execSync('git rev-parse HEAD').toString().trim(),
+        INNER_BASE_URL: process.env.INNER_BASE_URL || 'https://senka.su'
     },
     poweredByHeader: false,
     publicRuntimeConfig: {

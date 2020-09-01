@@ -12,7 +12,7 @@ import { Spin, BackTop, Row, Col, Select, Layout, ConfigProvider } from 'antd'
 
 import { i18n, Link, withTranslation } from '../../i18n'
 
-import { languages, lngSource, version, defaultLngSource, footerLinkList } from './config'
+import { languages, lngSource, version, commit, defaultLngSource, footerLinkList } from './config'
 
 const { Option } = Select;
 const { Header, Footer, Content } = Layout;
@@ -79,7 +79,7 @@ export default withTranslation('common')(class extends PureComponent {
                                             <div className='nav-title'>{t(item.title)}</div>
                                             <ul className='nav-links'>{(item.links || []).map(link => (
                                                 <li className='nav-link' key={link.title}>
-                                                    <a rel="noopener" target={link.external ? '_blank' : null} href={link.to}>
+                                                    <a rel='noopener' target={link.external ? '_blank' : null} href={link.to}>
                                                         <span className='nav-text'>{link.title}</span>
                                                         {link.external ? <ExportOutlined className='nav-icon' /> : null}
                                                     </a>
@@ -88,7 +88,10 @@ export default withTranslation('common')(class extends PureComponent {
                                         </Col>
                                     ))}
                                     <Col style={{ textAlign: 'right' }} span={6}>
-                                        <div className="version">{`v${version}`}</div>
+                                        <div className="version">
+                                            <span>{`v${version}`}</span>
+                                            <span>(<a rel='noopener' target='_blank' href={`https://github.com/senka-viewer/senka-viewer/commit/${commit}`}>{commit.slice(0, 7)}</a>)</span>
+                                        </div>
                                     </Col>
                                 </Row>
                             </div>

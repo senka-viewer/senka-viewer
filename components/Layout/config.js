@@ -4,6 +4,8 @@ import enUS from 'antd/lib/locale/en_US'
 
 export const version = process.env.APP_VERSION;
 
+export const commit = process.env.APP_COMMIT;
+
 export const languages = [
     {
         value: 'ja',
