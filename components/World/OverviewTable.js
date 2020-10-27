@@ -26,11 +26,6 @@ function OverviewTable({ t, cutoff, prediction }) {
                 align: 'center',
                 dataIndex: 'cutoffValue',
                 title: t('page-world:senka')
-            }, {
-                width: '30%',
-                align: 'center',
-                dataIndex: 'predictValue',
-                title: t('page-world:prediction')
             }]} />
     )
 }
