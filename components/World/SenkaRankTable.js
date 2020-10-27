@@ -24,6 +24,7 @@ export default withTranslation('page-world')(class extends PureComponent {
             currentPage: 1,
             selectedRow: -1,
             highlightNotes: [],
+            showPrediction: false,
             modalVisible: false,
             modalPlayerNo: -1,
         };
@@ -47,6 +48,11 @@ export default withTranslation('page-world')(class extends PureComponent {
         })
     }
 
+    switchShowPrediction(checked) {
+        this.setState({ showPrediction: checked });
+        this.setHighLightNotes();
+    }
+
     setSelectedRow(value) {
         this.setState({ selectedRow: value }, () => {
             const element = findDOMNode(this).querySelector(`[data-row-key="${value}"]`);
@@ -65,7 +71,7 @@ export default withTranslation('page-world')(class extends PureComponent {
 
     render() {
         const { t, players } = this.props;
-        const { currentPage, selectedRow, modalVisible, modalPlayerNo } = this.state;
+        const { showPrediction, currentPage, selectedRow, modalVisible, modalPlayerNo } = this.state;
         return (
             <>
                 {modalVisible ? <SenkaDetail players={players} playerNo={modalPlayerNo} afterClose={this.closeDetail.bind(this)} /> : null}
@@ -98,6 +104,9 @@ export default withTranslation('page-world')(class extends PureComponent {
                                     </Option>
                                 ))}
                             </Select>
+                            <Switch checked={showPrediction} style={{ marginRight: '10px' }}
+                                onChange={this.switchShowPrediction.bind(this)} />
+                            <span>{t(`page-world:${showPrediction ? 'prediction-on' : 'prediction-off'}`)}</span>
                         </>
                     )}
                     footer={() => {
@@ -114,6 +123,30 @@ export default withTranslation('page-world')(class extends PureComponent {
                                         onClick={() => this.setHighLightNotes()}>※<sup>[1]</sup></span>
                                     <span> {t('page-world:senka-rank-note1')}</span>
                                 </p>
+                                {
+                                    showPrediction ? (
+                                        <>
+                                            <p className={clz({ highlight: highlightNotes['note2'] })}>
+                                                <span id='note2'
+                                                    className={clz('text-danger', { 'note-icon': highlightNotes['note2'] })}
+                                                    onClick={() => this.setHighLightNotes()}>※<sup>[2]</sup></span>
+                                                <span> {t('page-world:senka-rank-note2')}</span>
+                                            </p>
+                                            <p className={clz({ highlight: highlightNotes['note3'] })}>
+                                                <span id='note3'
+                                                    className={clz('text-danger', { 'note-icon': highlightNotes['note3'] })}
+                                                    onClick={() => this.setHighLightNotes()}>※<sup>[3]</sup></span>
+                                                <span> {t('page-world:senka-rank-note3')}</span>
+                                            </p>
+                                            <p className={clz({ highlight: highlightNotes['note23'] })}>
+                                                <span id='note23'
+                                                    className={clz('text-danger', { 'note-icon': highlightNotes['note23'] })}
+                                                    onClick={() => this.setHighLightNotes()}>※<sup>[2,3]</sup></span>
+                                                <span> {t('page-world:senka-rank-note23')}</span>
+                                            </p>
+                                        </>
+                                    ) : null
+                                }
                             </div>
                         )
                     }}
@@ -156,7 +189,35 @@ export default withTranslation('page-world')(class extends PureComponent {
                         align: 'center',
                         dataIndex: 'curMedal',
                         title: t('page-world:medal')
-                    }, {
+                    }, showPrediction ? {
+                        title: () => (
+                            <>
+                                <span>{t('page-world:prediction-pt')}</span>
+                                <a onClick={() => this.setHighLightNotes('note2', 'note23')} href='#note2'>
+                                    <sup className='text-danger'>※[2]</sup>
+                                </a>
+                            </>
+                        ),
+                        align: 'center',
+                        dataIndex: 'predicteo',
+                        render(val) {
+                            return val === -1 ? '--' : val
+                        }
+                    } : null, showPrediction ? {
+                        title: () => (
+                            <>
+                                <span>{t('page-world:prediction-st')}</span>
+                                <a onClick={() => this.setHighLightNotes('note3', 'note23')} href='#note3'>
+                                    <sup className='text-danger'>※[3]</sup>
+                                </a>
+                            </>
+                        ),
+                        align: 'center',
+                        dataIndex: 'predicteo_special',
+                        render(val) {
+                            return val === -1 ? '--' : val
+                        }
+                    } : null, {
                         align: 'center',
                         dataIndex: 'comment',
                         title: t('page-world:comment'),
