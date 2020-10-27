@@ -90,7 +90,7 @@ export default withTranslation('common')(class extends PureComponent {
                                     <Col style={{ textAlign: 'right' }} span={6}>
                                         <div className="version">
                                             <span>{`v${version}`}</span>
-                                            <span>(<a rel='noopener' target='_blank' href={`https://github.com/senka-viewer/senka-viewer/commit/${commit}`}>{commit.slice(0, 7)}</a>)</span>
+                                            <span>({commit.slice(0, 7)})</span>
                                         </div>
                                     </Col>
                                 </Row>
