@@ -6,7 +6,7 @@ import Layout from '../components/Layout';
 function PageError({ statusCode }) {
     return (
         <Layout title='Error'>
-            <Alert showIcon type='error' message={statusCode ? `An error occurred on server` : 'An error occurred on client'} />
+            <Alert showIcon type='error' message={statusCode ? `An error occurred on server` : 'An error occurred on client, Please refresh '} />
         </Layout>
     )
 }
