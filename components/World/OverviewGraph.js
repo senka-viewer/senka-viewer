@@ -1,9 +1,8 @@
 import _ from 'lodash'
 
-import { Skeleton } from 'antd'
-import { format } from 'date-fns'
-import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
+import {Skeleton} from 'antd'
+import {format} from 'date-fns'
+import React, {useEffect, useState} from 'react'
 
 import echarts from 'echarts/lib/echarts'
 import ReactEchartsCore from 'echarts-for-react/lib/core'
@@ -14,28 +13,19 @@ import 'echarts/lib/component/tooltip'
 import 'echarts/lib/component/legend'
 import 'echarts/lib/component/dataZoom'
 
-import { withTranslation } from '../../i18n'
-import { dataZoomIcon, RANKS } from '../../libs/utils'
+import {dataZoomIcon, RANKS} from '../../libs/utils'
+import {useTranslation} from "next-i18next";
 
-export default withTranslation('server')(class extends PureComponent {
-    static propTypes = {
-        t: PropTypes.func.isRequired,
-        cutofflist: PropTypes.array.isRequired
-    };
+export const OverviewGraph = props => {
+    const {t} = useTranslation('server');
+    const [loading, setLoading] = useState(true);
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            loading: true
-        }
-    }
+    useEffect(() => {
+        setLoading(false);
+    }, []);
 
-    componentDidMount() {
-        this.setState({ loading: false })
-    }
-
-    getOptions() {
-        const { cutofflist, t } = this.props;
+    const getOptions = () => {
+        const {cutofflist} = props;
         let minV = Infinity;
         let maxV = -Infinity;
         const cutoffLength = cutofflist.length;
@@ -49,7 +39,7 @@ export default withTranslation('server')(class extends PureComponent {
         };
         for (let i = 0, len = cutofflist.length; i < len; i++) {
             const _cutoff = cutofflist[i];
-            const { timestamp, cutoff } = _cutoff;
+            const {timestamp, cutoff} = _cutoff;
             Object.keys(cutoff).forEach(num => {
                 const val = cutoff[num];
                 maxV = Math.max(maxV, val);
@@ -140,23 +130,20 @@ export default withTranslation('server')(class extends PureComponent {
         }
     }
 
-    render() {
-        const { loading } = this.state;
-        const { cutofflist = [] } = this.props;
-        return (
-            <Skeleton
-                paragraph={{ rows: 7 }}
-                className='overview-graph-skeleton'
-                loading={loading || !cutofflist.length}>
-                <ReactEchartsCore
-                    notMerge
-                    lazyUpdate
-                    echarts={echarts}
-                    option={this.getOptions()}
-                    style={{ height: '325px' }}
-                    className='overview-graph'
-                />
-            </Skeleton>
-        )
-    }
-})
+    const {cutofflist = []} = props;
+    return (
+        <Skeleton
+            paragraph={{rows: 7}}
+            className='overview-graph-skeleton'
+            loading={loading || !cutofflist.length}>
+            <ReactEchartsCore
+                notMerge
+                lazyUpdate
+                echarts={echarts}
+                option={getOptions()}
+                style={{height: '325px'}}
+                className='overview-graph'
+            />
+        </Skeleton>
+    )
+}

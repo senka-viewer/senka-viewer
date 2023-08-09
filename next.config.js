@@ -1,10 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 const cp = require('child_process');
-
-const withLess = require('@zeit/next-less');
+const { i18n } = require('./next-i18next.config.js')
+const withLess = require("next-with-less");
 const lessToJS = require('less-vars-to-js');
-const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
+const OptimizeCSSPlugin = require('css-minimizer-webpack-plugin');
 
 const pkgInfo = require('./package.json');
 
@@ -13,10 +13,11 @@ const themeVariables = lessToJS(
 );
 
 module.exports = withLess({
+    i18n,
     env: {
         APP_VERSION: pkgInfo.version,
         APP_COMMIT: cp.execSync('git rev-parse HEAD').toString().trim(),
-        INNER_BASE_URL: process.env.INNER_BASE_URL || 'https://senka.su'
+        INNER_BASE_URL: process.env.INNER_BASE_URL || 'https://senka.me'
     },
     poweredByHeader: false,
     publicRuntimeConfig: {
@@ -25,30 +26,12 @@ module.exports = withLess({
             : 'none',
     },
     lessLoaderOptions: {
-        javascriptEnabled: true,
-        modifyVars: themeVariables
+        lessOptions: {
+            javascriptEnabled: true,
+            modifyVars: themeVariables
+        }
     },
     webpack: (config, { isServer, dev }) => {
-        if (isServer) {
-            const antStyles = /antd\/.*?\/style.*?/;
-            const origExternals = [...config.externals];
-            config.externals = [
-                (context, request, callback) => {
-                    if (request.match(antStyles)) return callback();
-                    if (typeof origExternals[0] === 'function') {
-                        origExternals[0](context, request, callback)
-                    } else {
-                        callback()
-                    }
-                },
-                ...(typeof origExternals[0] === 'function' ? [] : origExternals),
-            ];
-
-            config.module.rules.unshift({
-                test: antStyles,
-                use: 'null-loader',
-            })
-        }
         if (!dev) {
             config.plugins.push(new OptimizeCSSPlugin());
         }

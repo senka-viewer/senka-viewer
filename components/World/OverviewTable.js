@@ -1,19 +1,19 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
-import { Table } from 'antd'
+import {Table} from 'antd'
 
-import { RANKS } from '../../libs/utils'
-import { withTranslation } from '../../i18n'
+import {RANKS} from '../../libs/utils'
+import {useTranslation} from "next-i18next";
 
-function OverviewTable({ t, cutoff, prediction }) {
+export const OverviewTable = ({cutoff, prediction}) => {
+    const {t} = useTranslation('server');
     return (
         <Table
             bordered
             pagination={false}
             rowKey='cutoffName'
             dataSource={RANKS.map(num => ({
-                cutoffName: t(`server:top${num}`),
+                cutoffName: t(`top${num}`),
                 cutoffValue: cutoff[num],
                 predictValue: prediction && (prediction[num] && prediction[num][1] !== -1) ? prediction[num][1] : '--'
             }))}
@@ -26,15 +26,6 @@ function OverviewTable({ t, cutoff, prediction }) {
                 align: 'center',
                 dataIndex: 'cutoffValue',
                 title: t('page-world:senka')
-            }]} />
+            }]}/>
     )
 }
-
-OverviewTable.propTypes = {
-    t: PropTypes.func.isRequired,
-    cutoff: PropTypes.object.isRequired,
-    prediction: PropTypes.object
-};
-
-export default withTranslation(['server', 'page-world'])(OverviewTable)
-

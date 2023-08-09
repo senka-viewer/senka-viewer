@@ -2,7 +2,7 @@
   "apps": [
     {
       "name": "senka-viewer",
-      "script": "index.js",
+      "script": "npm run start",
       "instances": 4,
       "exec_mode": "cluster_mode",
       "out_file": "/var/log/pm2/senka-viewer/out/out.log",

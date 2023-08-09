@@ -1,16 +1,15 @@
 import _ from 'lodash'
-import PropTypes from 'prop-types'
-import { format } from 'date-fns'
-import React, { PureComponent } from 'react'
+import {format} from 'date-fns'
+import React, {useState} from 'react'
 
 import echarts from 'echarts/lib/echarts'
 import ReactEchartsCore from 'echarts-for-react/lib/core'
 
-import { Button } from 'antd'
-import { LineChartOutlined, BarChartOutlined } from '@ant-design/icons'
+import {Button} from 'antd'
+import {LineChartOutlined, BarChartOutlined} from '@ant-design/icons'
 
-import { withTranslation } from '../../../i18n'
-import { colorsMap, dataZoomIcon } from '../../../libs/utils'
+import {colorsMap, dataZoomIcon} from '../../../libs/utils'
+import {useTranslation} from "next-i18next";
 
 const ButtonGroup = Button.Group;
 
@@ -27,25 +26,12 @@ const ChartTypes = {
     [K_CHART_TYPE.LINE_CHART]: 'line-chart'
 };
 
-export default withTranslation('page-world')(class extends PureComponent {
-    static propTypes = {
-        t: PropTypes.func.isRequired,
-        players: PropTypes.array.isRequired
-    };
+export const Chart = (props) => {
+    const {t} = useTranslation('page-world');
+    const [chartType, setChartType] = useState(K_CHART_TYPE.LINE_CHART);
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            chartType: K_CHART_TYPE.LINE_CHART
-        }
-    }
-
-    setChartType(chartType = K_CHART_TYPE.BAR_CHART) {
-        this.setState({ chartType });
-    }
-
-    getBarChartOption() {
-        const { players } = this.props;
+    const getBarChartOption = () => {
+        const {players} = props;
         const dataList = [];
         let maxV = -Infinity;
         let minV = Infinity;
@@ -112,8 +98,8 @@ export default withTranslation('page-world')(class extends PureComponent {
         }
     }
 
-    getLineChartOption() {
-        const { players } = this.props;
+    const getLineChartOption = () => {
+        const {players} = props;
         const dateList = [];
         const dataList = [];
         let maxV = -Infinity;
@@ -221,35 +207,34 @@ export default withTranslation('page-world')(class extends PureComponent {
         }
     }
 
-    getChartOption() {
-        const { chartType } = this.state;
-        return chartType === K_CHART_TYPE.BAR_CHART ? this.getBarChartOption() : this.getLineChartOption();
+    const getChartOption = () => {
+        return chartType === K_CHART_TYPE.BAR_CHART ? getBarChartOption() : getLineChartOption();
     }
 
-    render() {
-        const { t } = this.props;
-        const { chartType } = this.state;
-        return (
-            <div className='player-chart'>
-                <div className='header'>
-                    <div className="button-group">
-                        <ButtonGroup>
-                            <Button icon={<LineChartOutlined />} type={chartType === K_CHART_TYPE.LINE_CHART ? 'primary' : 'default'} onClick={this.setChartType.bind(this, K_CHART_TYPE.LINE_CHART)} />
-                            <Button icon={<BarChartOutlined />} type={chartType === K_CHART_TYPE.BAR_CHART ? 'primary' : 'default'} onClick={this.setChartType.bind(this, K_CHART_TYPE.BAR_CHART)} />
-                        </ButtonGroup>
-                    </div>
-                    <div className="description">{t(`${ChartTypes[chartType]}-description`)}</div>
+    return (
+        <div className='player-chart'>
+            <div className='header'>
+                <div className="button-group">
+                    <ButtonGroup>
+                        <Button icon={<LineChartOutlined/>}
+                                type={chartType === K_CHART_TYPE.LINE_CHART ? 'primary' : 'default'}
+                                onClick={() => setChartType(K_CHART_TYPE.LINE_CHART)}/>
+                        <Button icon={<BarChartOutlined/>}
+                                type={chartType === K_CHART_TYPE.BAR_CHART ? 'primary' : 'default'}
+                                onClick={() => setChartType(K_CHART_TYPE.BAR_CHART)}/>
+                    </ButtonGroup>
                 </div>
-                <div className="content">
-                    <ReactEchartsCore
-                        notMerge
-                        lazyUpdate
-                        className='rank-graph'
-                        echarts={echarts}
-                        option={this.getChartOption()}
-                    />
-                </div>
+                <div className="description">{t(`${ChartTypes[chartType]}-description`)}</div>
             </div>
-        );
-    }
-})
+            <div className="content">
+                <ReactEchartsCore
+                    notMerge
+                    lazyUpdate
+                    className='rank-graph'
+                    echarts={echarts}
+                    option={getChartOption()}
+                />
+            </div>
+        </div>
+    );
+}

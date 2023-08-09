@@ -1,146 +1,129 @@
-import _ from 'lodash'
-import { format } from 'date-fns'
-import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
+import {format} from 'date-fns'
+import React, {useState, useEffect} from 'react'
 
-import { Modal, Button } from 'antd'
-import { FastBackwardOutlined, StepBackwardOutlined, PauseOutlined, CaretRightOutlined, StepForwardOutlined, FastForwardOutlined } from '@ant-design/icons'
+import {Modal, Button} from 'antd'
+import {
+    FastBackwardOutlined,
+    StepBackwardOutlined,
+    PauseOutlined,
+    CaretRightOutlined,
+    StepForwardOutlined,
+    FastForwardOutlined
+} from '@ant-design/icons'
 
 import echarts from 'echarts/lib/echarts'
 import ReactEchartsCore from 'echarts-for-react/lib/core'
 
-import { colorsMap } from '../../../libs/utils'
+import {colorsMap} from '../../../libs/utils'
 
 const ButtonGroup = Button.Group;
 
 const ANIMATION_INTERVAL = 500;
 
-export default class extends PureComponent {
-    static propTypes = {
-        visible: PropTypes.bool.isRequired,
-        players: PropTypes.array.isRequired,
-        onClose: PropTypes.func.isRequired
-    };
-
-    constructor(props) {
-        super(props);
-        this.senkaHistory = {};
-        this.players = props.players.reduce((acc, player) => {
-            acc[player.rankno] = {
+export const Racing = props => {
+    const senkaHistory = {};
+    const players = props.players.reduce((acc, player) => {
+        acc[player.rankno] = {
+            key: player.rankno,
+            name: player.name,
+            color: colorsMap[player.color]
+        };
+        player.senka.forEach(s => {
+            if (!senkaHistory[s.timestamp]) {
+                senkaHistory[s.timestamp] = []
+            }
+            senkaHistory[s.timestamp].push({
                 key: player.rankno,
-                name: player.name,
-                color: colorsMap[player.color]
-            };
-            player.senka.forEach(s => {
-                if (!this.senkaHistory[s.timestamp]) {
-                    this.senkaHistory[s.timestamp] = []
-                }
-                this.senkaHistory[s.timestamp].push({
-                    key: player.rankno,
-                    val: s.senka,
-                })
-            });
-            return acc
-        }, {});
-        Object.keys(this.senkaHistory)
-            .forEach(time => this.senkaHistory[time]
-                .sort((ha, hb) => hb.val - ha.val));
-        this.timeStamps = Object.keys(this.senkaHistory).map(ts => +ts);
-        this.timeStamps.sort();
-        this.timer = null;
-        this.state = {
-            idx: 0,
-            play: false,
-            visible: true,
+                val: s.senka,
+            })
+        });
+        return acc
+    }, {});
+    Object.keys(senkaHistory)
+        .forEach(time => senkaHistory[time]
+            .sort((ha, hb) => hb.val - ha.val));
+    const timeStamps = Object.keys(senkaHistory).map(ts => +ts);
+    timeStamps.sort();
+    let timer = null;
+
+    const [idx, setIdx] = useState(0);
+    const [play, setPlay] = useState(false);
+    const [visible, setVisible] = useState(true);
+
+    const onCancel = () => {
+        setVisible(false);
+    }
+
+    const clearTimer = () => {
+        if (timer) {
+            clearTimeout(timer);
+            timer = null
         }
     }
 
-    onCancel() {
-        this.setState({ visible: false })
-    }
-
-    clearTimer() {
-        if (this.timer) {
-            clearTimeout(this.timer);
-            this.timer = null
-        }
-    }
-
-    handleSetCur(i, s = false) {
-        if (i < 0 || i >= this.timeStamps.length) {
+    const handleSetCur = (i, s = false) => {
+        if (i < 0 || i >= timeStamps.length) {
             return false
         }
-        const patch = {
-            idx: i
-        };
+        setIdx(i);
         if (s) {
-            patch.play = false
+            setPlay(false);
         }
-        this.setState(patch, () => {
-            const item = document.getElementById(`racing-id-${i}`);
-            if (item && item.parentElement && item.scrollTo) {
-                item.parentElement.scrollTo({
-                    left: Math.max(0, item.offsetLeft - item.clientWidth * 5),
-                    behavior: 'smooth',
-                })
-            }
-        });
+        const item = document.getElementById(`racing-id-${i}`);
+        if (item && item.parentElement && item.scrollTo) {
+            item.parentElement.scrollTo({
+                left: Math.max(0, item.offsetLeft - item.clientWidth * 5),
+                behavior: 'smooth',
+            })
+        }
         return true
     }
 
-    handlePlay(i) {
-        let ok = this.handleSetCur(i + 1);
+    const handlePlay = i => {
+        let ok = handleSetCur(i + 1);
         if (!ok) {
-            this.setState({ play: false });
+            setPlay(false);
             return
         }
-        this.timer = setTimeout(() => {
-            this.clearTimer();
-            this.handlePlay(i + 1)
+        timer = setTimeout(() => {
+            clearTimer();
+            handlePlay(i + 1);
         }, ANIMATION_INTERVAL)
     }
 
-    handlePlayControl() {
-        if (!this.state.play) {
-            this.setState({
-                play: true
-            }, () => {
-                this.handlePlay(this.state.idx)
-            })
+    const handlePlayControl = () => {
+        if (!play) {
+            setPlay(true);
+            handlePlay(idx);
         } else {
-            this.setState({
-                play: false
-            })
+            setPlay(false);
         }
     }
 
-    renderHistoryLabels() {
-        const { idx } = this.state;
-        const cur = this.timeStamps[idx];
-        return this.timeStamps.map((t, i) => (
+    const renderHistoryLabels = () => {
+        const cur = timeStamps[idx];
+        return timeStamps.map((t, i) => (
             <Button
                 key={t}
                 id={`racing-id-${i}`}
                 type={t === cur ? 'primary' : 'default'}
-                onClick={this.handleSetCur.bind(this, i)}
+                onClick={() => handleSetCur(i)}
             >{format(t, 'MM/dd HH:00')}</Button>
         ))
     }
 
-    componentDidUpdate() {
-        if (!this.state.play && this.timer) {
-            this.clearTimer()
+    useEffect(() => {
+        if (!play && timer) {
+            clearTimer();
         }
-    }
+        return () => {
+            clearTimer();
+        }
+    }, []);
 
-    componentWillUnmount() {
-        this.clearTimer()
-    }
-
-    getOption() {
-        const { idx } = this.state;
-        const cur = this.timeStamps[idx];
-        const _history = this.senkaHistory[cur];
+    const getOption = () => {
+        const cur = timeStamps[idx];
+        const _history = senkaHistory[cur];
         if (!_history || !_history.length) {
             return {}
         }
@@ -164,11 +147,11 @@ export default class extends PureComponent {
                 data: ['']
             },
             series: _history.map(h => ({
-                name: this.players[h.key].name,
+                name: players[h.key].name,
                 type: 'bar',
                 itemStyle: {
                     normal: {
-                        color: this.players[h.key].color
+                        color: players[h.key].color
                     }
                 },
                 label: {
@@ -185,40 +168,39 @@ export default class extends PureComponent {
         }
     }
 
-    render() {
-        const { idx, play, visible } = this.state;
-        const option = this.getOption();
-        return (
-            <Modal
-                width='90vw'
-                className='senka-racing-modal'
-                footer={null}
-                visible={visible}
-                afterClose={this.props.onClose}
-                onCancel={this.onCancel.bind(this)}>
-                <div className="modal-wrapper">
-                    <div id="play-tools">
-                        <ButtonGroup className="history-list">
-                            <Button icon={<FastBackwardOutlined />} onClick={this.handleSetCur.bind(this, 0, true)} />
-                            <Button icon={<StepBackwardOutlined />} onClick={this.handleSetCur.bind(this, idx - 1, true)} />
-                            <Button icon={play ? <PauseOutlined /> : <CaretRightOutlined />} onClick={this.handlePlayControl.bind(this)} />
-                            <Button icon={<StepForwardOutlined />} onClick={this.handleSetCur.bind(this, idx + 1, true)} />
-                            <Button icon={<FastForwardOutlined />} onClick={this.handleSetCur.bind(this, this.timeStamps.length - 1, true)} />
-                        </ButtonGroup>
-                    </div>
-                    <div id='history'>
-                        <ButtonGroup className="history-list">
-                            {this.renderHistoryLabels()}
-                        </ButtonGroup>
-                    </div>
-                    <ReactEchartsCore
-                        className='history-graph'
-                        echarts={echarts}
-                        option={option}
-                        notMerge={true}
-                        lazyUpdate={true} />
+    const option = getOption();
+    return (
+        <Modal
+            width='90vw'
+            className='senka-racing-modal'
+            footer={null}
+            visible={visible}
+            afterClose={props.onClose}
+            onCancel={onCancel}>
+            <div className="modal-wrapper">
+                <div id="play-tools">
+                    <ButtonGroup className="history-list">
+                        <Button icon={<FastBackwardOutlined/>} onClick={() => handleSetCur(0, true)}/>
+                        <Button icon={<StepBackwardOutlined/>} onClick={() => handleSetCur(idx - 1, true)}/>
+                        <Button icon={play ? <PauseOutlined/> : <CaretRightOutlined/>}
+                                onClick={() => handlePlayControl()}/>
+                        <Button icon={<StepForwardOutlined/>} onClick={() => handleSetCur(idx + 1, true)}/>
+                        <Button icon={<FastForwardOutlined/>}
+                                onClick={() => handleSetCur(timeStamps.length - 1, true)}/>
+                    </ButtonGroup>
                 </div>
-            </Modal>
-        )
-    }
+                <div id='history'>
+                    <ButtonGroup className="history-list">
+                        {renderHistoryLabels()}
+                    </ButtonGroup>
+                </div>
+                <ReactEchartsCore
+                    className='history-graph'
+                    echarts={echarts}
+                    option={option}
+                    notMerge={true}
+                    lazyUpdate={true}/>
+            </div>
+        </Modal>
+    )
 }

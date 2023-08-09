@@ -1,65 +1,66 @@
 import _ from 'lodash'
 
-import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
+import React, {useEffect} from 'react'
 
-import '../assets/index.less'
-
-import { Alert } from 'antd'
+import {Alert} from 'antd'
 
 import Ajax from '../libs/ajax'
-import Layout from '../components/Layout'
-import { withTranslation } from '../i18n'
+import {Layout} from '../components/Layout'
 
-import ServerList from '../components/Index/ServerList'
-import ServerRanking from '../components/Index/SeverRanking'
+import {ServerList} from '../components/Index/ServerList'
+import {ServerRanking} from '../components/Index/SeverRanking'
+import {useTranslation} from "next-i18next";
+import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 
-class PageIndex extends PureComponent {
-    static propTypes = {
-        t: PropTypes.func.isRequired
-    };
-
-    static async getInitialProps() {
-        const res = (await Ajax.get('/server/list')).data;
-        if (_.get(res, 'code') !== 2) {
-            throw new Error('数据获取失败');
-        }
-        const server_list = _.get(res, 'data', []);
-        return {
-            server_list,
-            namespacesRequired: ['server', 'common', 'page-index'],
-            status: server_list.length ? 'success' : 'empty',
-        };
-    }
-
-    componentDidMount() {
+const PageIndex = (props) => {
+    useEffect(() => {
         (window.adsbygoogle = window.adsbygoogle || []).push({});
-    }
+    }, []);
 
-    render() {
-        const now = Date.now();
-        const { t, server_list } = this.props;
-        return (
-            <Layout title={t('page-index')}>
-                <Alert
-                    showIcon
-                    type='info'
-                    message={t('notice-message')}
-                    description={
-                        <div dangerouslySetInnerHTML={{ __html: t('notice-description') }} />
-                    } />
-                <ServerList now={now} server_list={server_list} />
-                <ins className='adsbygoogle'
-                     style={{display:'block'}}
-                     data-ad-client='ca-pub-9398663705489027'
-                     data-ad-slot='3547888536'
-                     data-ad-format='auto'
-                     data-full-width-responsive='true'
-                />
-                <ServerRanking now={now} server_list={server_list} />
-            </Layout>
-        )
-    }
+    const now = Date.now();
+    const {server_list} = props;
+
+    const {t} = useTranslation('page-index');
+
+    return (
+        <Layout title={t('page-index')}>
+            <Alert
+                showIcon
+                type='info'
+                message={t('notice-message')}
+                description={
+                    <div dangerouslySetInnerHTML={{__html: t('notice-description')}}/>
+                }/>
+            <ServerList now={now} server_list={server_list}/>
+            <ins className='adsbygoogle'
+                 style={{display: 'block'}}
+                 data-ad-client='ca-pub-9398663705489027'
+                 data-ad-slot='3547888536'
+                 data-ad-format='auto'
+                 data-full-width-responsive='true'
+            />
+            <ServerRanking now={now} server_list={server_list}/>
+        </Layout>
+    )
 }
 
-export default withTranslation('page-index')(PageIndex)
+export const getStaticProps = async ({locale}) => {
+    const res = (await Ajax.get('/server/list')).data;
+    if (_.get(res, 'code') !== 2) {
+        throw new Error('数据获取失败');
+    }
+    const server_list = _.get(res, 'data', []);
+    return {
+        props: {
+            server_list,
+            status: server_list.length ? 'success' : 'empty',
+            ...(await serverSideTranslations(locale ?? 'ja', [
+                'page-index',
+                'common',
+                'server'
+            ])),
+        }
+    };
+}
+
+export default PageIndex;

@@ -2,25 +2,29 @@ import _ from 'lodash'
 import React from 'react'
 import clz from 'classnames'
 
-import { format } from 'date-fns'
-import { Table, Tooltip } from 'antd'
+import {format} from 'date-fns'
+import {Table, Tooltip} from 'antd'
 
-import { needUpdate } from '../../libs/utils'
+import {needUpdate} from '../../libs/utils'
 
-import { withTranslation, Link } from '../../i18n'
+import {useTranslation} from "next-i18next";
+import Link from 'next/link';
 
 const CHUNK_SIZE = 2;
 
-function ServerStatus({ t, server, now }) {
+function ServerStatus({t, server, now}) {
     const notUpdate = needUpdate(server.lastmodifided, now);
     return (
-        <Tooltip title={notUpdate ? t('server:not-updated') : t('server:has-updated')}>
-            <span className={clz('server-status', notUpdate ? 'text-warning' : 'text-success')}>{format(server.lastmodifided, 'HH:mm:ss')}</span>
+        <Tooltip title={notUpdate ? t('not-updated', {ns: 'server'}) : t('has-updated', {ns: 'server'})}>
+            <span
+                className={clz('server-status', notUpdate ? 'text-warning' : 'text-success')}>{format(server.lastmodifided, 'HH:mm:ss')}</span>
         </Tooltip>
     )
 }
 
-export default withTranslation(['page-index', 'server'])(function ({ t, now, server_list = [] }) {
+export const ServerList = (props) => {
+    const { server_list, now } = props;
+    const {t} = useTranslation(['page-index', 'server']);
     return (
         <Table
             bordered
@@ -30,14 +34,14 @@ export default withTranslation(['page-index', 'server'])(function ({ t, now, ser
             dataSource={
                 _.chunk(server_list, CHUNK_SIZE)
                     .map((chunk, index) => {
-                        const ret = { key: index };
+                        const ret = {key: index};
                         (chunk || []).forEach((item, idx) => ret[`server${idx}`] = item);
                         return ret;
                     })
             }
             columns={[
                 {
-                    title: t('server-list'),
+                    title: t('server-list', {ns: 'page-index'}),
                     children: (new Array(CHUNK_SIZE))
                         .join(',')
                         .split(',')
@@ -53,7 +57,7 @@ export default withTranslation(['page-index', 'server'])(function ({ t, now, ser
                                 const servernum = _.get(item, `server${index}.servernum`);
                                 return (
                                     <div className='server clearfix'>
-                                        <Link href={`/world?num=${servernum}`}>
+                                        <Link href={`/world?num=${servernum}`} legacyBehavior={true}>
                                             <a href={`/world?num=${servernum}`}>{`[${_.padStart(servernum, 2, '0')}] ${t(`server:${servernum}`)}`}</a>
                                         </Link>
                                         <ServerStatus t={t} now={now} server={server} />
@@ -62,6 +66,6 @@ export default withTranslation(['page-index', 'server'])(function ({ t, now, ser
                             }
                         }))
                 }
-            ]} />
+            ]}/>
     )
-})
+}
