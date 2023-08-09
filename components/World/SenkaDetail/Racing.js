@@ -20,6 +20,8 @@ const ButtonGroup = Button.Group;
 
 const ANIMATION_INTERVAL = 500;
 
+let timer = null;
+
 export const Racing = props => {
     const senkaHistory = {};
     const players = props.players.reduce((acc, player) => {
@@ -44,13 +46,13 @@ export const Racing = props => {
             .sort((ha, hb) => hb.val - ha.val));
     const timeStamps = Object.keys(senkaHistory).map(ts => +ts);
     timeStamps.sort();
-    let timer = null;
 
     const [idx, setIdx] = useState(0);
     const [play, setPlay] = useState(false);
     const [visible, setVisible] = useState(true);
 
     const onCancel = () => {
+        clearTimer();
         setVisible(false);
     }
 
@@ -79,7 +81,7 @@ export const Racing = props => {
         return true
     }
 
-    const handlePlay = i => {
+    const handlePlay = (i) => {
         let ok = handleSetCur(i + 1);
         if (!ok) {
             setPlay(false);
@@ -116,10 +118,13 @@ export const Racing = props => {
         if (!play && timer) {
             clearTimer();
         }
-        return () => {
+    }, [idx, play]);
+
+    useEffect(() => {
+        if (!visible && timer) {
             clearTimer();
         }
-    }, []);
+    }, [visible]);
 
     const getOption = () => {
         const cur = timeStamps[idx];
@@ -174,7 +179,7 @@ export const Racing = props => {
             width='90vw'
             className='senka-racing-modal'
             footer={null}
-            visible={visible}
+            open={visible}
             afterClose={props.onClose}
             onCancel={onCancel}>
             <div className="modal-wrapper">

@@ -46,10 +46,11 @@ export const SenkaDetail = props => {
             setColorIdx(colorIdx - 1);
             delete selectedPlayersMap[rankno]
         } else {
-            setColorIdx(colorIdx + 1);
+            const cid = colorIdx + 1;
+            setColorIdx(cid);
             selectedPlayersMap[rankno] = {
-                index: colorIdx,
-                color: colors[colorIdx],
+                index: cid,
+                color: colors[cid],
                 ...playersMap[rankno],
             }
         }
@@ -92,7 +93,7 @@ export const SenkaDetail = props => {
             width='90vw'
             className='senka-detail-modal'
             footer={null}
-            visible={visible}
+            open={visible}
             afterClose={props.afterClose}
             onCancel={onCancel}
             title={
