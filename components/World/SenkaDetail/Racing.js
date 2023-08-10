@@ -1,5 +1,5 @@
 import {format} from 'date-fns'
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 
 import {Modal, Button} from 'antd'
 import {
@@ -11,8 +11,7 @@ import {
     FastForwardOutlined
 } from '@ant-design/icons'
 
-import echarts from 'echarts/lib/echarts'
-import ReactEchartsCore from 'echarts-for-react/lib/core'
+import EChartsReact from 'echarts-for-react'
 
 import {colorsMap} from '../../../libs/utils'
 
@@ -47,6 +46,7 @@ export const Racing = props => {
     const timeStamps = Object.keys(senkaHistory).map(ts => +ts);
     timeStamps.sort();
 
+    const ref = useRef();
     const [idx, setIdx] = useState(0);
     const [play, setPlay] = useState(false);
     const [visible, setVisible] = useState(true);
@@ -126,6 +126,10 @@ export const Racing = props => {
         }
     }, [visible]);
 
+    useEffect(() => {
+        ref.current?.getEchartsInstance().resize();
+    }, []);
+
     const getOption = () => {
         const cur = timeStamps[idx];
         const _history = senkaHistory[cur];
@@ -199,10 +203,12 @@ export const Racing = props => {
                         {renderHistoryLabels()}
                     </ButtonGroup>
                 </div>
-                <ReactEchartsCore
+                <EChartsReact
                     className='history-graph'
-                    echarts={echarts}
                     option={option}
+                    ref={ref}
+                    style={{ height: '100%', width: '100%' }}
+                    opts={{  height: 'auto', width: 'auto' }}
                     notMerge={true}
                     lazyUpdate={true}/>
             </div>

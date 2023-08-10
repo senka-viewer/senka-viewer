@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 
 import {LoadingOutlined, ExportOutlined} from '@ant-design/icons'
 
 import Head from 'next/head'
-import Router, {useRouter} from 'next/router'
+import {useRouter} from 'next/router'
 
-import {Spin, BackTop, Row, Col, Select, Layout as XLayout, ConfigProvider} from 'antd'
+import {Spin, FloatButton, Row, Col, Select, Layout as XLayout, ConfigProvider} from 'antd'
 
 import {i18n, useTranslation} from 'next-i18next';
 
@@ -41,8 +41,12 @@ export const Layout = (props) => {
                 <meta name='viewport' content='width=device-width, initial-scale=1'/>
                 <link rel='icon' href='/static/favicon.ico'/>
             </Head>
-            <ConfigProvider locale={locale}>
-                <BackTop/>
+            <ConfigProvider locale={locale} theme={{
+                token: {
+                    colorPrimary: '#2f54eb'
+                }
+            }}>
+                <FloatButton.BackTop/>
                 <Spin spinning={loading} tip={t('loading')} indicator={
                     <LoadingOutlined style={{fontSize: 24}} spin/>
                 }>

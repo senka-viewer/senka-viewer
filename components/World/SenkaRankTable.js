@@ -38,7 +38,7 @@ export const SenkaRankTable = props => {
             element.scrollIntoView();
         }
         if (typeof value !== 'undefined') {
-            setCurrentPage(Math.ceil((_.findIndex(this.props.players, player => player.rankno === value) + 1) / 20));
+            setCurrentPage(Math.ceil((_.findIndex(props.players, player => player.rankno === value) + 1) / 20));
         }
 
     }

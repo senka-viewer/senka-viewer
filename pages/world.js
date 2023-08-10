@@ -27,8 +27,8 @@ const PageWorld = props => {
 
     const router = useRouter();
 
-    const goBack = () => {
-        router.push('/');
+    const goBack = async () => {
+        await router.push('/');
     }
 
     useEffect(() => {

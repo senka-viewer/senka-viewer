@@ -1,9 +1,8 @@
 import _ from 'lodash'
 import {format} from 'date-fns'
-import React, {useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 
-import echarts from 'echarts/lib/echarts'
-import ReactEchartsCore from 'echarts-for-react/lib/core'
+import EChartsReact from 'echarts-for-react'
 
 import {Button} from 'antd'
 import {LineChartOutlined, BarChartOutlined} from '@ant-design/icons'
@@ -29,6 +28,7 @@ const ChartTypes = {
 export const Chart = (props) => {
     const {t} = useTranslation('page-world');
     const [chartType, setChartType] = useState(K_CHART_TYPE.LINE_CHART);
+    const ref = useRef(null);
 
     const getBarChartOption = () => {
         const {players} = props;
@@ -211,6 +211,10 @@ export const Chart = (props) => {
         return chartType === K_CHART_TYPE.BAR_CHART ? getBarChartOption() : getLineChartOption();
     }
 
+    useEffect(() => {
+        ref.current?.getEchartsInstance().resize();
+    }, []);
+
     return (
         <div className='player-chart'>
             <div className='header'>
@@ -227,11 +231,13 @@ export const Chart = (props) => {
                 <div className="description">{t(`${ChartTypes[chartType]}-description`)}</div>
             </div>
             <div className="content">
-                <ReactEchartsCore
+                <EChartsReact
                     notMerge
                     lazyUpdate
+                    ref={ref}
+                    style={{ height: '100%', width: '100%' }}
+                    opts={{  height: 'auto', width: 'auto' }}
                     className='rank-graph'
-                    echarts={echarts}
                     option={getChartOption()}
                 />
             </div>

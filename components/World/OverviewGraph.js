@@ -4,14 +4,7 @@ import {Skeleton} from 'antd'
 import {format} from 'date-fns'
 import React, {useEffect, useState} from 'react'
 
-import echarts from 'echarts/lib/echarts'
-import ReactEchartsCore from 'echarts-for-react/lib/core'
-
-import 'echarts/lib/chart/line'
-import 'echarts/lib/chart/bar'
-import 'echarts/lib/component/tooltip'
-import 'echarts/lib/component/legend'
-import 'echarts/lib/component/dataZoom'
+import EChartsReact from 'echarts-for-react'
 
 import {dataZoomIcon, RANKS} from '../../libs/utils'
 import {useTranslation} from "next-i18next";
@@ -136,12 +129,12 @@ export const OverviewGraph = props => {
             paragraph={{rows: 7}}
             className='overview-graph-skeleton'
             loading={loading || !cutofflist.length}>
-            <ReactEchartsCore
+            <EChartsReact
                 notMerge
                 lazyUpdate
-                echarts={echarts}
+                style={{ height: '100%', width: '100%' }}
+                opts={{  height: 'auto', width: 'auto' }}
                 option={getOptions()}
-                style={{height: '325px'}}
                 className='overview-graph'
             />
         </Skeleton>
