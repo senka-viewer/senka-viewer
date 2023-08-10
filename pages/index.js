@@ -47,7 +47,7 @@ const PageIndex = (props) => {
     )
 }
 
-export const getStaticProps = async ({locale}) => {
+export const getServerSideProps = async ({locale}) => {
     const res = (await Ajax.get('/server/list')).data;
     if (_.get(res, 'code') !== 2) {
         throw new Error('数据获取失败');
