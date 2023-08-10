@@ -30,7 +30,6 @@
     "react-i18next": "^13.0.3"
   },
   "devDependencies": {
-    "css-minimizer-webpack-plugin": "^5.0.1",
     "less": "^4.2.0",
     "next-with-less": "^3.0.1"
   }
