@@ -121,7 +121,7 @@ export const SenkaDetail = props => {
                                 <Button disabled={currentPage <= 1} icon={<VerticalLeftOutlined />} onClick={() => setCurrentPage(1)} />
                                 <Button disabled={currentPage <= 1} icon={<LeftOutlined />} onClick={() => setCurrentPage(currentPage - 1)} />
                                 <Button>{`${_.padStart(currentPage, 2, 0)}/${_.padStart(totalPage, 2, 0)}`}</Button>
-                                <Button disabled={currentPage >= totalPage} icon={<RightOutlined />} onClick={() => setCurrentPage.bind(currentPage + 1)} />
+                                <Button disabled={currentPage >= totalPage} icon={<RightOutlined />} onClick={() => setCurrentPage(currentPage + 1)} />
                                 <Button disabled={currentPage >= totalPage} icon={<VerticalRightOutlined />} onClick={() => setCurrentPage(totalPage)} />
                             </ButtonGroup>
                             {Object.keys(selectedPlayersMap).length > 0 ? <Button style={{ marginLeft: '0.5em' }} onClick={() => setRacing(true)} icon={<RetweetOutlined />} /> : null}

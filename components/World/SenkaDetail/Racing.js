@@ -118,7 +118,7 @@ export const Racing = props => {
         if (!play && timer) {
             clearTimer();
         }
-    }, [idx, play]);
+    }, [play]);
 
     useEffect(() => {
         if (!visible && timer) {
