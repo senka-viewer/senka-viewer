@@ -1,6 +1,7 @@
 import _ from 'lodash'
 
 import React, {useEffect} from 'react'
+import * as base64 from 'js-base64';
 
 import {Alert} from 'antd'
 
@@ -18,7 +19,9 @@ const PageIndex = (props) => {
     }, []);
 
     const now = Date.now();
-    const {server_list} = props;
+    const {b64data} = props;
+    const data = JSON.parse(base64.decode(b64data));
+    const { server_list } = data;
 
     const {t} = useTranslation('page-index');
 
@@ -52,7 +55,7 @@ export const getStaticProps = async ({locale}) => {
     const server_list = _.get(res, 'data', []);
     return {
         props: {
-            server_list,
+            b64data: base64.encode(JSON.stringify({server_list})),
             status: server_list.length ? 'success' : 'empty',
             ...(await serverSideTranslations(locale ?? 'ja', [
                 'page-index',

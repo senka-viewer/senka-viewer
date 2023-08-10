@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import qs from 'qs'
 import clz from 'classnames'
+import * as base64 from 'js-base64'
 
 import {format} from 'date-fns'
 import React, {useEffect} from 'react'
@@ -34,8 +35,10 @@ const PageWorld = props => {
         (window.adsbygoogle = window.adsbygoogle || []).push({});
     }, []);
 
-
-    const {world_id, lastmodifided, cutoff, cutofflist, prediction, players} = props;
+    const {b64data} = props;
+    const data = JSON.parse(base64.decode(b64data));
+    const {lastmodifided, cutoff, cutofflist, prediction, players} = data;
+    const {world_id} = props;
     const update_time = format(lastmodifided, 'yyyy/MM/dd HH:mm:ss');
     const notUpdate = needUpdate(lastmodifided, Date.now());
     return (
@@ -81,25 +84,28 @@ const PageWorld = props => {
     );
 }
 
-export const getServerSideProps = async ({ req, locale }) => {
+export const getServerSideProps = async ({req, locale}) => {
     const query = qs.parse(req.url.split('?')[1]);
     const world_id = +query.num;
     const res = (await Ajax.get(`/server/${world_id}`)).data;
     if (_.get(res, 'code') !== 2) {
         throw new Error('数据获取失败');
     }
+    const data = {
+        ..._.get(res, 'data', {}),
+        players: _.get(res, 'data.players', []).map(player => {
+            player.senka.sort((sa, sb) => sb.timestamp - sa.timestamp)
+            return {
+                ...player,
+                senka_val: player.senka.length > 0 ? player.senka[0].senka : 0,
+                senka_delta: player.senka.length > 1 ? player.senka[0].senka - player.senka[1].senka : 0
+            }
+        }),
+    }
     return {
         props: {
             world_id,
-            ..._.get(res, 'data', {}),
-            players: _.get(res, 'data.players', []).map(player => {
-                player.senka.sort((sa, sb) => sb.timestamp - sa.timestamp)
-                return {
-                    ...player,
-                    senka_val: player.senka.length > 0 ? player.senka[0].senka : 0,
-                    senka_delta: player.senka.length > 1 ? player.senka[0].senka - player.senka[1].senka : 0
-                }
-            }),
+            b64data: base64.encode(JSON.stringify(data)),
             ...(await serverSideTranslations(locale || 'ja', [
                 'common', 'server', 'page-world'
             ])),

@@ -10,4 +10,5 @@ FROM node:18-alpine
 COPY --from=build /code /code
 RUN apk add --no-cache --virtual .build-deps git
 WORKDIR /code
+EXPOSE 3000
 CMD ["npm", "start"]
