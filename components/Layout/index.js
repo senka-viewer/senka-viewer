@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react'
 import {LoadingOutlined, ExportOutlined} from '@ant-design/icons'
 
 import Head from 'next/head'
-import Router from 'next/router'
+import Router, {useRouter} from 'next/router'
 
 import {Spin, BackTop, Row, Col, Select, Layout as XLayout, ConfigProvider} from 'antd'
 
@@ -18,15 +18,17 @@ export const Layout = (props) => {
     const [loading, setLoading] = useState(false);
     const [locale, _setLocale] = useState(lngSource[i18n.language] || defaultLngSource);
 
-    const setLocale = lng => i18n.changeLanguage(lng).then(() => _setLocale(lngSource[lng]));
+    const setLocale = async lng => {
+        await router.replace({
+            pathname: router.pathname,
+            query: router.query
+        }, null, {locale: lng});
+        _setLocale(lngSource[lng]);
+    };
 
     const {t} = useTranslation('common');
 
-    useEffect(() => {
-        Router.events.on('routeChangeStart', () => setLoading(false));
-        Router.events.on('routeChangeComplete', () => setLoading(false));
-        Router.events.on('routeChangeError', () => setLoading(false));
-    }, []);
+    const router = useRouter();
 
     const {title, children} = props;
     return (

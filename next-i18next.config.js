@@ -5,6 +5,7 @@ module.exports = {
     i18n: {
         defaultLocale: 'ja',
         locales: ['ja', 'zh', 'en'],
+        localeDetection: false
     },
     fallbackLng: {
         default: ['ja']
