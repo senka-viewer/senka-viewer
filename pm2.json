@@ -3,7 +3,7 @@
     {
       "name": "senka-viewer",
       "instances": "max",
-      "script": "node_modules/next/dist/bin/next",
+      "script": "next",
       "args": "start",
       "exec_mode": "cluster_mode",
       "out_file": "/var/log/pm2/senka-viewer/out/out.log",
