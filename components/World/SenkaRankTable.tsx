@@ -1,12 +1,12 @@
 import _ from 'lodash'
 import clz from 'classnames'
 import React, {useState} from 'react'
+import {useTranslation} from "next-i18next";
 
 import {Table, Select} from 'antd'
 
 import {SenkaDetail} from './SenkaDetail'
 
-import {useTranslation} from "next-i18next";
 
 const {Option} = Select;
 

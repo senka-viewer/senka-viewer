@@ -1,15 +1,15 @@
 import _ from 'lodash'
 import React from 'react'
 import clz from 'classnames'
+import Link from 'next/link';
+import {TFunction} from "i18next"
+import {useTranslation} from "next-i18next"
 
 import {format} from 'date-fns'
 import {Table, Tooltip} from 'antd'
 
 import {needUpdate} from '../../libs/utils'
 
-import {useTranslation} from "next-i18next";
-import Link from 'next/link';
-import {TFunction} from "i18next";
 
 const CHUNK_SIZE = 2;
 

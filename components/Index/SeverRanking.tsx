@@ -1,11 +1,10 @@
 import _ from 'lodash'
 import clz from 'classnames'
-
 import {Table} from 'antd'
 import React from 'react'
+import {useTranslation} from "next-i18next"
 
 import {RANKS, needUpdate} from '../../libs/utils'
-import {useTranslation} from "next-i18next";
 
 interface ServerRankingProps {
     now: number;

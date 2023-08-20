@@ -1,4 +1,5 @@
 import {format} from 'date-fns'
+import {EChartsOption} from "echarts"
 import React, {useState, useEffect, useRef} from 'react'
 
 import {Modal, Button} from 'antd'
@@ -14,7 +15,6 @@ import {
 import EChartsReact from 'echarts-for-react'
 
 import {colorsMap} from '../../../libs/utils'
-import {EChartsOption} from "echarts";
 
 const ButtonGroup = Button.Group;
 

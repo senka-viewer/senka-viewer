@@ -2,12 +2,17 @@ import _ from 'lodash'
 import qs from 'qs'
 import clz from 'classnames'
 import * as base64 from 'js-base64'
+import {GetServerSideProps} from "next";
+import {useTranslation} from "next-i18next";
+import {ArrowLeftOutlined} from '@ant-design/icons'
 
 import {format} from 'date-fns'
 import React, {useEffect} from 'react'
 import {Button, Tooltip, Row, Col} from 'antd'
 
-import {ArrowLeftOutlined} from '@ant-design/icons'
+import {useRouter} from "next/router";
+import {serverSideTranslations} from "next-i18next/serverSideTranslations";
+
 
 import Ajax from '../libs/ajax'
 import {needUpdate} from '../libs/utils'
@@ -17,9 +22,7 @@ import {Layout} from '../components/Layout'
 import {OverviewTable} from '../components/World/OverviewTable'
 import {OverviewGraph} from '../components/World/OverviewGraph'
 import {SenkaRankTable} from '../components/World/SenkaRankTable'
-import {serverSideTranslations} from "next-i18next/serverSideTranslations";
-import {useTranslation} from "next-i18next";
-import {useRouter} from "next/router";
+
 
 interface PageWorldProps {
     world_id: number;
@@ -89,7 +92,7 @@ const PageWorld: React.FC<PageWorldProps> = props => {
     );
 }
 
-export const getServerSideProps = async ({req, locale}) => {
+export const getServerSideProps: GetServerSideProps = async ({req, locale}) => {
     const query = qs.parse(req.url.split('?')[1]);
     const world_id = +query.num;
     const res = (await Ajax.get<ServerDetailResponse>(`/server/${world_id}`)).data;

@@ -1,7 +1,9 @@
 import _ from 'lodash'
-
+import * as base64 from 'js-base64'
 import React, {useEffect} from 'react'
-import * as base64 from 'js-base64';
+import {GetServerSideProps} from "next"
+import {useTranslation} from "next-i18next"
+import {serverSideTranslations} from "next-i18next/serverSideTranslations"
 
 import {Alert} from 'antd'
 
@@ -10,9 +12,6 @@ import {Layout} from '../components/Layout'
 
 import {ServerList} from '../components/Index/ServerList'
 import {ServerRanking} from '../components/Index/SeverRanking'
-import {useTranslation} from "next-i18next";
-import {serverSideTranslations} from "next-i18next/serverSideTranslations";
-import {GetServerSideProps} from "next";
 
 interface PageIndexProps {
     b64data: string;

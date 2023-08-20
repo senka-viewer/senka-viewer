@@ -1,9 +1,9 @@
 import React from 'react'
 
 import {Table} from 'antd'
+import {useTranslation} from "next-i18next";
 
 import {RANKS} from '../../libs/utils'
-import {useTranslation} from "next-i18next";
 
 interface OverviewTableProps {
     cutoff: CutOff;

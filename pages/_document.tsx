@@ -1,7 +1,8 @@
 import React from 'react'
 
-import i18nextConfig from '../next-i18next.config'
 import Document, {Html, Head, Main, NextScript} from 'next/document'
+
+import i18nextConfig from '../next-i18next.config'
 
 export default class extends Document {
     render() {

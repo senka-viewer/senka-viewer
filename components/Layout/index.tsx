@@ -2,12 +2,12 @@ import React, {useState} from 'react'
 
 import {ExportOutlined} from '@ant-design/icons'
 
+import {i18n, useTranslation} from 'next-i18next'
 import Head from 'next/head'
 import {useRouter} from 'next/router'
 
 import {FloatButton, Row, Col, Select, Layout as XLayout, ConfigProvider} from 'antd'
 
-import {i18n, useTranslation} from 'next-i18next';
 
 import {languages, lngSource, version, commit, defaultLngSource, footerLinkList} from './config'
 

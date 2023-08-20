@@ -2,13 +2,13 @@ import _ from 'lodash'
 
 import {Skeleton} from 'antd'
 import {format} from 'date-fns'
+import {EChartsOption} from "echarts"
+import {useTranslation} from "next-i18next"
 import React, {useEffect, useState} from 'react'
-
 import EChartsReact from 'echarts-for-react'
 
 import {RANKS} from '../../libs/utils'
-import {useTranslation} from "next-i18next";
-import {EChartsOption} from "echarts";
+
 
 interface OverviewGraphProps {
     cutofflist: CutOffWithTs[]

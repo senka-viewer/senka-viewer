@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import React, {useState} from 'react'
+import {useTranslation} from "next-i18next"
 
 import {Modal, Row, Col, Button} from 'antd'
 import {
@@ -15,7 +16,6 @@ import {colors, colorsMap} from '../../../libs/utils'
 
 import {Chart} from './Chart'
 import {Racing} from './Racing';
-import {useTranslation} from "next-i18next";
 
 const PLAYER_PAGE_SIZE = 10;
 const MAX_SELECT_LIMIT = colors.length - 1;

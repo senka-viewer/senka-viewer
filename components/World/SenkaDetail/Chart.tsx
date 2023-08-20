@@ -1,5 +1,7 @@
 import _ from 'lodash'
 import {format} from 'date-fns'
+import {EChartsOption} from "echarts"
+import {useTranslation} from "next-i18next"
 import React, {useEffect, useRef, useState} from 'react'
 
 import EChartsReact from 'echarts-for-react'
@@ -8,8 +10,7 @@ import {Button} from 'antd'
 import {LineChartOutlined, BarChartOutlined} from '@ant-design/icons'
 
 import {colorsMap} from '../../../libs/utils'
-import {useTranslation} from "next-i18next";
-import {EChartsOption} from "echarts";
+
 
 const ButtonGroup = Button.Group;
 
