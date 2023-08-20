@@ -1,4 +1,5 @@
 import React from 'react'
+import {AppProps} from "next/app";
 
 import {appWithTranslation} from 'next-i18next'
 import 'antd/lib/style/reset.css';
@@ -10,7 +11,7 @@ import '../assets/world.less'
 import '../components/Layout/index.less';
 import '../components/World/SenkaDetail/index.less';
 
-const MyApp = ({Component, pageProps}) => (
+const MyApp: React.FC<AppProps> = ({Component, pageProps}) => (
     <Component {...pageProps} />
 )
 

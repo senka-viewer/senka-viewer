@@ -14,6 +14,7 @@ import {
 import EChartsReact from 'echarts-for-react'
 
 import {colorsMap} from '../../../libs/utils'
+import {EChartsOption} from "echarts";
 
 const ButtonGroup = Button.Group;
 
@@ -21,7 +22,12 @@ const ANIMATION_INTERVAL = 500;
 
 let timer = null;
 
-export const Racing = props => {
+interface RacingProps {
+    players: Player[];
+    onClose: () => void
+}
+
+export const Racing: React.FC<RacingProps> = props => {
     const senkaHistory = {};
     const players = props.players.reduce((acc, player) => {
         acc[player.rankno] = {
@@ -42,11 +48,11 @@ export const Racing = props => {
     }, {});
     Object.keys(senkaHistory)
         .forEach(time => senkaHistory[time]
-            .sort((ha, hb) => hb.val - ha.val));
+            .sort((ha: { val: number }, hb: { val: number }) => hb.val - ha.val));
     const timeStamps = Object.keys(senkaHistory).map(ts => +ts);
     timeStamps.sort();
 
-    const ref = useRef();
+    const ref = useRef<EChartsReact>();
     const [idx, setIdx] = useState(0);
     const [play, setPlay] = useState(false);
     const [visible, setVisible] = useState(true);
@@ -63,7 +69,7 @@ export const Racing = props => {
         }
     }
 
-    const handleSetCur = (i, s = false) => {
+    const handleSetCur = (i: number, s = false) => {
         if (i < 0 || i >= timeStamps.length) {
             return false
         }
@@ -81,7 +87,7 @@ export const Racing = props => {
         return true
     }
 
-    const handlePlay = (i) => {
+    const handlePlay = (i: number) => {
         let ok = handleSetCur(i + 1);
         if (!ok) {
             setPlay(false);
@@ -130,7 +136,7 @@ export const Racing = props => {
         ref.current?.getEchartsInstance().resize();
     }, []);
 
-    const getOption = () => {
+    const getOption = (): EChartsOption => {
         const cur = timeStamps[idx];
         const _history = senkaHistory[cur];
         if (!_history || !_history.length) {
@@ -155,7 +161,7 @@ export const Racing = props => {
                 type: 'category',
                 data: ['']
             },
-            series: _history.map(h => ({
+            series: _history.map((h: { key: string, val: number }) => ({
                 name: players[h.key].name,
                 type: 'bar',
                 itemStyle: {
@@ -167,7 +173,9 @@ export const Racing = props => {
                     normal: {
                         show: true,
                         position: 'insideRight',
-                        formatter(series) {
+                        formatter(series: {
+                            seriesName: string
+                        }) {
                             return series.seriesName
                         }
                     }
@@ -207,8 +215,8 @@ export const Racing = props => {
                     className='history-graph'
                     option={option}
                     ref={ref}
-                    style={{ height: '100%', width: '100%' }}
-                    opts={{  height: 'auto', width: 'auto' }}
+                    style={{height: '100%', width: '100%'}}
+                    opts={{height: 'auto', width: 'auto'}}
                     notMerge={true}
                     lazyUpdate={true}/>
             </div>

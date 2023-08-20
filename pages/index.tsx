@@ -12,16 +12,21 @@ import {ServerList} from '../components/Index/ServerList'
 import {ServerRanking} from '../components/Index/SeverRanking'
 import {useTranslation} from "next-i18next";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
+import {GetServerSideProps} from "next";
 
-const PageIndex = (props) => {
+interface PageIndexProps {
+    b64data: string;
+}
+
+const PageIndex: React.FC<PageIndexProps> = props => {
     useEffect(() => {
         (window.adsbygoogle = window.adsbygoogle || []).push({});
     }, []);
 
     const now = Date.now();
     const {b64data} = props;
-    const data = JSON.parse(base64.decode(b64data));
-    const { server_list } = data;
+    const data: { server_list: ServerCutOff[] } = JSON.parse(base64.decode(b64data));
+    const {server_list} = data;
 
     const {t} = useTranslation('page-index');
 
@@ -47,12 +52,12 @@ const PageIndex = (props) => {
     )
 }
 
-export const getServerSideProps = async ({locale}) => {
-    const res = (await Ajax.get('/server/list')).data;
+export const getServerSideProps: GetServerSideProps = async ({locale}) => {
+    const res = (await Ajax.get<ServerListResponse>('/server/list')).data;
     if (_.get(res, 'code') !== 2) {
         throw new Error('数据获取失败');
     }
-    const server_list = _.get(res, 'data', []);
+    const server_list = res.data || [];
     return {
         props: {
             b64data: base64.encode(JSON.stringify({server_list})),

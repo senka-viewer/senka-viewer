@@ -5,7 +5,12 @@ import {Table} from 'antd'
 import {RANKS} from '../../libs/utils'
 import {useTranslation} from "next-i18next";
 
-export const OverviewTable = ({cutoff, prediction}) => {
+interface OverviewTableProps {
+    cutoff: CutOff;
+    prediction: Prediction;
+}
+
+export const OverviewTable: React.FC<OverviewTableProps> = ({cutoff, prediction}) => {
     const {t} = useTranslation('server');
     return (
         <Table

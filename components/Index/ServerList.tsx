@@ -9,10 +9,18 @@ import {needUpdate} from '../../libs/utils'
 
 import {useTranslation} from "next-i18next";
 import Link from 'next/link';
+import {TFunction} from "i18next";
 
 const CHUNK_SIZE = 2;
 
-function ServerStatus({t, server, now}) {
+interface ServerStatusProps {
+    t: TFunction<[string, string], undefined>;
+    now: number;
+    server: ServerCutOff;
+}
+
+const ServerStatus: React.FC<ServerStatusProps> = props => {
+    const {t, now, server} = props;
     const notUpdate = needUpdate(server.lastmodifided, now);
     return (
         <Tooltip title={notUpdate ? t('not-updated', {ns: 'server'}) : t('has-updated', {ns: 'server'})}>
@@ -22,8 +30,13 @@ function ServerStatus({t, server, now}) {
     )
 }
 
-export const ServerList = (props) => {
-    const { server_list, now } = props;
+interface ServerListProps {
+    server_list: ServerCutOff[];
+    now: number;
+}
+
+export const ServerList: React.FC<ServerListProps> = props => {
+    const {server_list, now} = props;
     const {t} = useTranslation(['page-index', 'server']);
     return (
         <Table
@@ -60,7 +73,7 @@ export const ServerList = (props) => {
                                         <Link href={`/world?num=${servernum}`} legacyBehavior={true}>
                                             <a href={`/world?num=${servernum}`}>{`[${_.padStart(servernum, 2, '0')}] ${t(`server:${servernum}`)}`}</a>
                                         </Link>
-                                        <ServerStatus t={t} now={now} server={server} />
+                                        <ServerStatus t={t} now={now} server={server}/>
                                     </div>
                                 )
                             }

@@ -10,14 +10,19 @@ import {useTranslation} from "next-i18next";
 
 const {Option} = Select;
 
-export const SenkaRankTable = props => {
+interface SenkaRankTableProps {
+    players: Player[];
+}
+
+export const SenkaRankTable: React.FC<SenkaRankTableProps> = props => {
+    const {players} = props;
     const {t} = useTranslation('page-world');
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedRow, _setSelectedRow] = useState(-1);
-    const [highlightNotes, _setHighlightNotes] = useState([]);
+    const [highlightNotes, _setHighlightNotes] = useState<string[]>([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalPlayerNo, setModalPlayerNo] = useState(-1);
-    const openDetail = playerNo => {
+    const openDetail = (playerNo: number) => {
         setModalVisible(true);
         setModalPlayerNo(playerNo);
     }
@@ -27,11 +32,11 @@ export const SenkaRankTable = props => {
         setModalPlayerNo(-1);
     }
 
-    const setHighLightNotes = (...notes) => {
+    const setHighLightNotes = (...notes: string[]) => {
         _setHighlightNotes(notes || []);
     }
 
-    const setSelectedRow = value => {
+    const setSelectedRow = (value: number | undefined) => {
         _setSelectedRow(value);
         const element = document.querySelector(`[data-row-key="${value}"]`);
         if (element && element.scrollIntoView) {
@@ -43,7 +48,6 @@ export const SenkaRankTable = props => {
 
     }
 
-    const {players} = props;
     return (
         <>
             {modalVisible ? <SenkaDetail players={players} playerNo={modalPlayerNo}
@@ -56,7 +60,7 @@ export const SenkaRankTable = props => {
                 rowClassName={item => selectedRow === item.rankno ? 'highlight' : ''}
                 pagination={{
                     pageSize: 20,
-                    position: 'top',
+                    position: 'top' as any,
                     current: currentPage,
                     onChange: current => setCurrentPage(current)
                 }}
@@ -90,7 +94,7 @@ export const SenkaRankTable = props => {
                             <p className={clz({highlight: _highlightNotes['note1']})}>
                                     <span id='note1'
                                           className={clz('text-danger', {'note-icon': _highlightNotes['note1']})}
-                                          onClick={setHighLightNotes}>※<sup>[1]</sup></span>
+                                          onClick={() => setHighLightNotes()}>※<sup>[1]</sup></span>
                                 <span> {t('page-world:senka-rank-note1')}</span>
                             </p>
                         </div>

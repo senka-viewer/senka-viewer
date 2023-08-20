@@ -7,8 +7,9 @@ import EChartsReact from 'echarts-for-react'
 import {Button} from 'antd'
 import {LineChartOutlined, BarChartOutlined} from '@ant-design/icons'
 
-import {colorsMap, dataZoomIcon} from '../../../libs/utils'
+import {colorsMap} from '../../../libs/utils'
 import {useTranslation} from "next-i18next";
+import {EChartsOption} from "echarts";
 
 const ButtonGroup = Button.Group;
 
@@ -25,12 +26,16 @@ const ChartTypes = {
     [K_CHART_TYPE.LINE_CHART]: 'line-chart'
 };
 
-export const Chart = (props) => {
+interface ChartProps {
+    players: Player[]
+}
+
+export const Chart: React.FC<ChartProps> = props => {
     const {t} = useTranslation('page-world');
     const [chartType, setChartType] = useState(K_CHART_TYPE.LINE_CHART);
     const ref = useRef(null);
 
-    const getBarChartOption = () => {
+    const getBarChartOption = (): EChartsOption => {
         const {players} = props;
         const dataList = [];
         let maxV = -Infinity;
@@ -98,7 +103,7 @@ export const Chart = (props) => {
         }
     }
 
-    const getLineChartOption = () => {
+    const getLineChartOption = (): EChartsOption => {
         const {players} = props;
         const dateList = [];
         const dataList = [];
@@ -159,9 +164,9 @@ export const Chart = (props) => {
                     label: {
                         formatter(param) {
                             if (!param.seriesData.length) {
-                                return _.chunk(param.value.toFixed(0).split('').reverse(), 3).map(chunk => chunk.reverse().join('')).reverse().join(',')
+                                return _.chunk((param.value as number).toFixed(0).split('').reverse(), 3).map(chunk => chunk.reverse().join('')).reverse().join(',')
                             }
-                            return `${format(param.value, 'MM/dd')}\r\n${format(param.value, 'HH:mm')}`
+                            return `${format(param.value as number, 'MM/dd')}\r\n${format(param.value as number, 'HH:mm')}`
                         }
                     }
                 }
@@ -180,7 +185,6 @@ export const Chart = (props) => {
             }, {
                 start: revealPercent,
                 end: 100,
-                handleIcon: dataZoomIcon,
                 handleSize: '80%',
                 handleStyle: {
                     color: '#fff',
@@ -235,8 +239,8 @@ export const Chart = (props) => {
                     notMerge
                     lazyUpdate
                     ref={ref}
-                    style={{ height: '100%', width: '100%' }}
-                    opts={{  height: 'auto', width: 'auto' }}
+                    style={{height: '100%', width: '100%'}}
+                    opts={{height: 'auto', width: 'auto'}}
                     className='rank-graph'
                     option={getChartOption()}
                 />

@@ -6,7 +6,13 @@ export const version = process.env.APP_VERSION;
 
 export const commit = process.env.APP_COMMIT;
 
-export const languages = [
+interface Lang {
+    value: string;
+    label: string;
+    source: typeof jaJP
+}
+
+export const languages: Lang[] = [
     {
         value: 'ja',
         label: '日本語',
@@ -27,11 +33,22 @@ export const languages = [
 export const lngSource = languages.reduce((ret, item) => {
     ret[item.value] = item.source;
     return ret;
-}, {});
+}, {} as Record<string, typeof jaJP>);
 
 export const defaultLngSource = jaJP;
 
-export const footerLinkList = [
+interface Link {
+    title: string;
+    to: string;
+    external: boolean
+}
+
+interface LinkGroup {
+    title: string;
+    links: Link[]
+}
+
+export const footerLinkList: LinkGroup[] = [
     {
         title: 'contact',
         links: [

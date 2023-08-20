@@ -7,7 +7,12 @@ import React from 'react'
 import {RANKS, needUpdate} from '../../libs/utils'
 import {useTranslation} from "next-i18next";
 
-export const ServerRanking = (props) => {
+interface ServerRankingProps {
+    now: number;
+    server_list: ServerCutOff[]
+}
+
+export const ServerRanking: React.FC<ServerRankingProps> = props => {
     const {t} = useTranslation(['page-index', 'server']);
     const {now, server_list = []} = props;
     const cpSeverList = [...server_list];
@@ -36,7 +41,7 @@ export const ServerRanking = (props) => {
                         key: 'servernum',
                         title: t('server', {ns: 'server'}),
                         width: `${100 / (RANKS.length + 1)}%`,
-                        render(item) {
+                        render(item: ServerCutOff) {
                             return (
                                 <div
                                     className={clz(['cell', needUpdate(item.lastmodifided, now) ? 'text-warning' : 'text-success'])}>{t(`${item.servernum}`, {ns: 'server'})}</div>
@@ -45,10 +50,10 @@ export const ServerRanking = (props) => {
                     },
                     ...RANKS.map(num => ({
                         key: `cutoff.${num}`,
-                        align: 'center',
+                        align: 'center' as any,
                         title: t(`top${num}`, {ns: 'server'}),
                         width: `${100 / (RANKS.length + 1)}%`,
-                        render(item) {
+                        render(item: ServerCutOff) {
                             return (
                                 <div className={clz(['cell', 'val', {
                                     'bg-success': (topTops[num] || []).includes(item.servernum),

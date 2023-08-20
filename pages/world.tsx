@@ -21,7 +21,12 @@ import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 import {useTranslation} from "next-i18next";
 import {useRouter} from "next/router";
 
-const PageWorld = props => {
+interface PageWorldProps {
+    world_id: number;
+    b64data: string;
+}
+
+const PageWorld: React.FC<PageWorldProps> = props => {
 
     const {t} = useTranslation(['server', 'page-world']);
 
@@ -36,7 +41,7 @@ const PageWorld = props => {
     }, []);
 
     const {b64data} = props;
-    const data = JSON.parse(base64.decode(b64data));
+    const data: ServerDetail = JSON.parse(base64.decode(b64data));
     const {lastmodifided, cutoff, cutofflist, prediction, players} = data;
     const {world_id} = props;
     const update_time = format(lastmodifided, 'yyyy/MM/dd HH:mm:ss');
@@ -87,14 +92,14 @@ const PageWorld = props => {
 export const getServerSideProps = async ({req, locale}) => {
     const query = qs.parse(req.url.split('?')[1]);
     const world_id = +query.num;
-    const res = (await Ajax.get(`/server/${world_id}`)).data;
+    const res = (await Ajax.get<ServerDetailResponse>(`/server/${world_id}`)).data;
     if (_.get(res, 'code') !== 2) {
         throw new Error('数据获取失败');
     }
     const data = {
         ..._.get(res, 'data', {}),
-        players: _.get(res, 'data.players', []).map(player => {
-            player.senka.sort((sa, sb) => sb.timestamp - sa.timestamp)
+        players: _.get(res, 'data.players', []).map((player: Player) => {
+            player.senka.sort((sa: Senka, sb: Senka) => sb.timestamp - sa.timestamp)
             return {
                 ...player,
                 senka_val: player.senka.length > 0 ? player.senka[0].senka : 0,

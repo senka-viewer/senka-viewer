@@ -6,10 +6,16 @@ import React, {useEffect, useState} from 'react'
 
 import EChartsReact from 'echarts-for-react'
 
-import {dataZoomIcon, RANKS} from '../../libs/utils'
+import {RANKS} from '../../libs/utils'
 import {useTranslation} from "next-i18next";
+import {EChartsOption} from "echarts";
 
-export const OverviewGraph = props => {
+interface OverviewGraphProps {
+    cutofflist: CutOffWithTs[]
+}
+
+export const OverviewGraph: React.FC<OverviewGraphProps> = props => {
+    const {cutofflist = []} = props;
     const {t} = useTranslation('server');
     const [loading, setLoading] = useState(true);
 
@@ -17,8 +23,7 @@ export const OverviewGraph = props => {
         setLoading(false);
     }, []);
 
-    const getOptions = () => {
-        const {cutofflist} = props;
+    const getOptions = (): EChartsOption => {
         let minV = Infinity;
         let maxV = -Infinity;
         const cutoffLength = cutofflist.length;
@@ -69,7 +74,7 @@ export const OverviewGraph = props => {
                 axisPointer: {
                     type: 'cross',
                     label: {
-                        formatter(param) {
+                        formatter(param: any) {
                             if (!param.seriesData.length) {
                                 return _.chunk(param.value.toFixed(0).split('').reverse(), 3).map(chunk => chunk.reverse().join('')).reverse().join(',')
                             }
@@ -86,7 +91,7 @@ export const OverviewGraph = props => {
                 top: '50px',
                 left: '20px',
                 right: '30px',
-                bottom: '40px',
+                bottom: '45px',
                 containLabel: true
             },
             dataZoom: [{
@@ -96,7 +101,6 @@ export const OverviewGraph = props => {
             }, {
                 start: revealPercent,
                 end: 100,
-                handleIcon: dataZoomIcon,
                 handleSize: '80%',
                 handleStyle: {
                     color: '#fff',
@@ -109,7 +113,7 @@ export const OverviewGraph = props => {
             xAxis: {
                 type: 'time',
                 axisLabel: {
-                    formatter(timestamp) {
+                    formatter(timestamp: number) {
                         return format(timestamp, 'MM/dd')
                     }
                 }
@@ -123,7 +127,6 @@ export const OverviewGraph = props => {
         }
     }
 
-    const {cutofflist = []} = props;
     return (
         <Skeleton
             paragraph={{rows: 7}}
@@ -132,8 +135,8 @@ export const OverviewGraph = props => {
             <EChartsReact
                 notMerge
                 lazyUpdate
-                style={{ height: '100%', width: '100%' }}
-                opts={{  height: 'auto', width: 'auto' }}
+                style={{height: '100%', width: '100%'}}
+                opts={{height: 'auto', width: 'auto'}}
                 option={getOptions()}
                 className='overview-graph'
             />
