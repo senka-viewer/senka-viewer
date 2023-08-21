@@ -1,3 +1,7 @@
+interface Window {
+    adsbygoogle?: any[]
+}
+
 interface BaseResponse<T> {
     code: number;
     status: string;
